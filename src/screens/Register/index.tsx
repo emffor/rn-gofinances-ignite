@@ -11,6 +11,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useForm } from "react-hook-form";
 
+import uuid from 'react-native-uuid';
+
+import { useNavigation } from '@react-navigation/native';
+
 import { Button } from '../../components/Form/Button';
 import { CategorySelectButton } from '../../components/Form/CategorySelectButton';
 import { InputForm } from '../../components/Form/InputForm';
@@ -46,6 +50,11 @@ const schema = Yup.object().shape({
     .required('O valor é obrigatório')
 })
 
+//Tipar Rota de Navegação bottom-tabs
+type NavigationProps = {
+  navigate: (screen: string) => void;
+}
+
 export function Register() {
   const dataKey = '@gofinances:transactions';
 
@@ -56,6 +65,8 @@ export function Register() {
     key: 'category',
     name: 'Categoria',
   });
+
+  const navigation = useNavigation<NavigationProps>();
 
   function handleTransactionTypeSelect(type: 'up' | 'down') {
     setTransactionType(type)
@@ -73,6 +84,7 @@ export function Register() {
   const {
     control,
     handleSubmit,
+    reset,//reset formulário
     formState: { errors } //desestruturando error do FormState
   } = useForm({
     //força q o valor do formulário siga um padrão.
@@ -90,10 +102,12 @@ export function Register() {
 
 
     const newTransaction = {
+      id: String(uuid.v4()),
       name: form.name,
       amount: form.amount,
       transactionType,
-      category: category.key
+      category: category.key,
+      date: new Date()
     }
 
     //Com setItem sempre sobrescreve
@@ -113,29 +127,40 @@ export function Register() {
 
       await AsyncStorage.setItem(dataKey, JSON.stringify(dataFormatted));
 
+      //reset states
+      reset(); //do useForm yup
+      setTransactionType('');
+      setCategory({
+        key: 'category',
+        name: 'Categoria',
+      })
+
+      navigation.navigate('Listagem')
     } catch (error) {
       console.log(error);
       Alert.alert('Não foi possível registrar a transação');
     }
   }
 
-  useEffect(() => {
-    async function loadData() {
-      const data = await AsyncStorage.getItem(dataKey);
-      console.log(JSON.parse(data!));
-    }
-    loadData()
-  }, []);
+  //LISTAR dataKey
+
+  /*   useEffect(() => {
+      async function loadData() {
+        const data = await AsyncStorage.getItem(dataKey);
+        console.log(JSON.parse(data!));
+      }
+      loadData()
+    }, []); */
 
 
-  //apagar asyncStorage
+  //APAGAR asyncStorage
 
-  /* useEffect(() => {
-    async function removeAll() {
-      await AsyncStorage.removeItem(dataKey);
-    }
-    removeAll()
-  }, []); */
+  /*   useEffect(() => {
+      async function removeAll() {
+        await AsyncStorage.removeItem(dataKey);
+      }
+      removeAll()
+    }, []); */
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
