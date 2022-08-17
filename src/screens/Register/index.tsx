@@ -89,17 +89,30 @@ export function Register() {
       return Alert.alert('Selecione a categoria');
 
 
-    const data = {
+    const newTransaction = {
       name: form.name,
       amount: form.amount,
       transactionType,
       category: category.key
     }
 
+    //Com setItem sempre sobrescreve
+
     try {
       //nome da aplicação + coleção das transações
-      const response = await AsyncStorage.setItem(dataKey, JSON.stringify(data));
-      /* console.log(response); */
+      const data = await AsyncStorage.getItem(dataKey);
+
+      //tem alguma coisa em data? se tiver já devolve o data se nao um array [];
+      const currentData = data ? JSON.parse(data) : [];
+
+      //adiciona a nova transação no array de transações + as que já estavam lá
+      const dataFormatted = [
+        ...currentData,
+        newTransaction
+      ];
+
+      await AsyncStorage.setItem(dataKey, JSON.stringify(dataFormatted));
+
     } catch (error) {
       console.log(error);
       Alert.alert('Não foi possível registrar a transação');
@@ -113,6 +126,16 @@ export function Register() {
     }
     loadData()
   }, []);
+
+
+  //apagar asyncStorage
+
+  /* useEffect(() => {
+    async function removeAll() {
+      await AsyncStorage.removeItem(dataKey);
+    }
+    removeAll()
+  }, []); */
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
