@@ -1,19 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
 import {
   Modal,
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
 } from 'react-native';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { useForm } from "react-hook-form";
 
 import { Button } from '../../components/Form/Button';
 import { CategorySelectButton } from '../../components/Form/CategorySelectButton';
-import { Input } from '../../components/Form/Input';
 import { InputForm } from '../../components/Form/InputForm';
 import { TransactionTypeButton } from '../../components/Form/TransactionTypeButton';
-
 import { CategorySelect } from '../CategorySelect';
+
 
 import {
   Container,
@@ -44,6 +47,8 @@ const schema = Yup.object().shape({
 })
 
 export function Register() {
+  const dataKey = '@gofinances:transactions';
+
   const [transactionType, setTransactionType] = useState('');
 
   const [categoryModalOpen, setCategoryModalOpen] = useState(false);
@@ -74,7 +79,8 @@ export function Register() {
     resolver: yupResolver(schema)
   });
 
-  function handleRegister(form: FormData) {
+  async function handleRegister(form: FormData) {
+
     //! significa se nao tiver nada !transactionType
     if (!transactionType)
       return Alert.alert('Selecione o tipo da transação');
@@ -89,9 +95,24 @@ export function Register() {
       transactionType,
       category: category.key
     }
-    console.log(data);
+
+    try {
+      //nome da aplicação + coleção das transações
+      const response = await AsyncStorage.setItem(dataKey, JSON.stringify(data));
+      /* console.log(response); */
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Não foi possível registrar a transação');
+    }
   }
 
+  useEffect(() => {
+    async function loadData() {
+      const data = await AsyncStorage.getItem(dataKey);
+      console.log(JSON.parse(data!));
+    }
+    loadData()
+  }, []);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -109,6 +130,7 @@ export function Register() {
               name='name'
               control={control} //como q ele vai identificar
               placeholder="Nome"
+              placeholderTextColor={'#999'}
               autoCapitalize='sentences' //primeira letra maiúscula
               autoCorrect={false}
               error={errors.name && errors.name.message}
@@ -118,6 +140,7 @@ export function Register() {
               name='amount'
               control={control} //como q ele vai identificar
               placeholder="Preço"
+              placeholderTextColor={'#999'}
               keyboardType='numeric'
               error={errors.amount && errors.amount.message}
             />
