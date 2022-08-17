@@ -68,7 +68,7 @@ export function Register() {
 
   const navigation = useNavigation<NavigationProps>();
 
-  function handleTransactionTypeSelect(type: 'up' | 'down') {
+  function handleTransactionTypeSelect(type: 'positive' | 'negative') {
     setTransactionType(type)
   }
 
@@ -105,7 +105,7 @@ export function Register() {
       id: String(uuid.v4()),
       name: form.name,
       amount: form.amount,
-      transactionType,
+      type: transactionType,
       category: category.key,
       date: new Date()
     }
@@ -196,14 +196,14 @@ export function Register() {
             <TransactionsTypes>
               <TransactionTypeButton
                 title='Income' type='up'
-                onPress={() => handleTransactionTypeSelect('up')}
+                onPress={() => handleTransactionTypeSelect('positive')}
                 //estou fazendo comparação ai esse retorno é verdadeiro ou falso.
-                isActive={transactionType === 'up'}
+                isActive={transactionType === 'positive'}
               />
               <TransactionTypeButton
                 title='Outcome' type='down'
-                onPress={() => handleTransactionTypeSelect('down')}
-                isActive={transactionType === 'down'}
+                onPress={() => handleTransactionTypeSelect('negative')}
+                isActive={transactionType === 'negative'}
               />
             </TransactionsTypes>
 

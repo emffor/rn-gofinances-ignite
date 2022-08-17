@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { HighlightCard } from '../../components/HighlightCard';
 import { TransactionCard, TransactionCardProps } from '../../components/TransactionCard';
+
+//Recarregar tela.
+import { useFocusEffect } from '@react-navigation/native';
 
 import {
   Container,
@@ -63,43 +66,53 @@ export function Dashboard() {
 
   const [data, setData] = useState<DataListProps[]>([]);
 
+
+  async function loadTransactions() {
+    const dataKey = '@gofinances:transactions';
+    const response = await AsyncStorage.getItem(dataKey);
+    const transactions = response ? JSON.parse(response) : [];
+
+    //formatar transações para o formato que o componente TransactionCard esperar
+    //percorre e formata ao mesmo tempo
+    const transactionsFormatted: DataListProps[] = transactions
+      .map((item: DataListProps) => {
+        const amount = Number(item.amount)
+          .toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+          })
+
+        const date = new Date(item.date)
+        const dateFormatted = Intl.DateTimeFormat('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: '2-digit'
+        }).format(date);
+
+        return {
+          id: item.id,
+          name: item.name,
+          amount,
+          type: item.type,
+          category: item.category,
+          date: dateFormatted,
+        }
+      });
+    setData(transactionsFormatted);
+  }
+
   useEffect(() => {
-    async function loadTransactions() {
-      const dataKey = '@gofinances:transactions';
-      const response = await AsyncStorage.getItem(dataKey);
-      const transactions = response ? JSON.parse(response) : [];
-
-      //formatar transações para o formato que o componente TransactionCard esperar
-      //percorre e formata ao mesmo tempo
-      const transactionsFormatted: DataListProps[] = transactions
-        .map((item: DataListProps) => {
-          const amount = Number(item.amount)
-            .toLocaleString('pt-BR', {
-              style: 'currency',
-              currency: 'BRL',
-            })
-
-          const date = new Date(item.date)
-          const dateFormatted = Intl.DateTimeFormat('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: '2-digit'
-          }).format(date);
-
-          return {
-            id: item.id,
-            name: item.name,
-            amount,
-            type: item.type,
-            category: item.category,
-            date: dateFormatted,
-          }
-        });
-      setData(transactionsFormatted);
-    }
-
     loadTransactions();
+
+    //LIMPAR LISTA DE TRANSACTION
+    /* const dataKey = '@gofinances:transactions';
+    AsyncStorage.removeItem(dataKey); */
   }, []);
+
+  //Recarregar tela
+  useFocusEffect(useCallback(() => {
+    loadTransactions();
+  }, []));
 
   return (
     <Container>
