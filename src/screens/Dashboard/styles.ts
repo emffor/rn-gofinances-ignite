@@ -17,7 +17,7 @@ export const Header = styled.View`
     width: 100%;
     height: ${RFPercentage(42)}px;
     
-    background-color: ${({theme}) => theme.colors.primary};
+    background-color: ${({ theme }) => theme.colors.primary};
 
     justify-content: center;
     align-items: flex-start;
@@ -77,9 +77,9 @@ export const Icon = styled(Feather)`
 
 //.attrs acessando as prop. do Component dentro do styled components
 export const HighlightCards = styled.ScrollView.attrs({
-    horizontal:true,
+    horizontal: true,
     showsHorizontalScrollIndicator: false,
-    contentContainerStyle: {paddingHorizontal: 24},
+    contentContainerStyle: { paddingHorizontal: 24 },
 })`
     width: 100%;
 
@@ -106,7 +106,14 @@ export const Title = styled.Text`
 //FlatList as new () => FlatList<DataListProps> 
 export const TransactionList = styled(FlatList).attrs({
     showsVerticalScrollIndicator: false,
-    contentContainerStyle:{
-      paddingBottom:  getBottomSpace()
+    contentContainerStyle: {
+        paddingBottom: getBottomSpace()
     }
 })`` as React.ComponentType as new <DataListProps>() => FlatList<DataListProps>;
+
+
+export const LoadContainer = styled.View`
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+`;
