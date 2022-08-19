@@ -8,7 +8,7 @@ import AppleSvg from "../../assets/apple.svg";
 import GoogleSvg from "../../assets/google.svg";
 import LogoSvg from "../../assets/logo.svg";
 
-import { AuthContext } from "../../context/AuthContext";
+import { useAuth } from "../../hook/auth";
 
 import {
     Container,
@@ -21,22 +21,16 @@ import {
 } from "./styles";
 
 export function SignIn() {
-    const data = useContext(AuthContext);
-
-    console.log(data);
-
+    const { user } = useAuth();
+    console.log(user);
 
     const [isLoading, setIsLoading] = useState(false);
 
     const theme = useTheme();
 
-    async function handleSignInWithGoogle() {
+    async function handleSignInWithGoogle() { }
 
-    }
-
-    async function handleSignInWithApple() {
-
-    }
+    async function handleSignInWithApple() { }
 
     return (
         <Container>

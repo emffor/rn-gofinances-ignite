@@ -18,7 +18,8 @@ import theme from './src/global/styles/theme';
 import { NavigationContainer } from "@react-navigation/native";
 import { AppRoutes } from './src/routes/app.routes';
 import { SignIn } from './src/screens/SignIn';
-import { AuthContext } from './src/context/AuthContext';
+
+import { AuthProvider } from './src/hook/auth';
 
 
 export default function App() {
@@ -39,9 +40,9 @@ export default function App() {
       <NavigationContainer>
         {/* <AppRoutes /> */}
 
-        <AuthContext.Provider value={[]}>
+        <AuthProvider>
           <SignIn />
-        </AuthContext.Provider>
+        </AuthProvider>
 
       </NavigationContainer>
     </ThemeProvider>
