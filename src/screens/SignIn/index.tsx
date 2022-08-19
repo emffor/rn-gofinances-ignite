@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { ActivityIndicator, Platform } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { useTheme } from "styled-components";
+import { SignInSocialButton } from "../../components/SignInSocialButton";
 
 import AppleSvg from "../../assets/apple.svg";
 import GoogleSvg from "../../assets/google.svg";
 import LogoSvg from "../../assets/logo.svg";
-import { SignInSocialButton } from "../../components/SignInSocialButton";
 
+import { AuthContext } from "../../context/AuthContext";
 
 import {
     Container,
@@ -20,6 +21,11 @@ import {
 } from "./styles";
 
 export function SignIn() {
+    const data = useContext(AuthContext);
+
+    console.log(data);
+
+
     const [isLoading, setIsLoading] = useState(false);
 
     const theme = useTheme();
