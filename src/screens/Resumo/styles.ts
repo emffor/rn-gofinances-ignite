@@ -4,12 +4,14 @@ import styled from 'styled-components/native';
 
 export const Container = styled.View`
     flex: 1;
-    background-color: ${({ theme }) => theme.colors.background};
 `;
 
-export const Content = styled.View`
-
-`;
+export const Content = styled.ScrollView.attrs({
+    contentContainerStyle: {
+        flex: 1,
+        padding: RFValue(24),
+    }
+})``;
 
 export const Header = styled.View`
     background-color: ${({ theme }) => theme.colors.primary};
