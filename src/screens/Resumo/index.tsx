@@ -3,6 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useTheme } from 'styled-components';
+import { addMonths, subMonths, format } from 'date-fns';
+import { ptBR } from "date-fns/locale";
 
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
@@ -42,7 +44,21 @@ interface CategoryData {
 
 export function Resumo() {
     const theme = useTheme();
+
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const [totalByCategories, setTotalByCategories] = useState<CategoryData[]>([]);
+
+    function handleDateChange(action: 'next' | 'prev') {
+        if (action === 'next') {
+            const newDate = addMonths(selectedDate, 1);
+            setSelectedDate(newDate);
+            /* console.log(newDate); */
+        } else {
+            const newDate = subMonths(selectedDate, 1);
+            setSelectedDate(newDate);
+            /* console.log(newDate); */
+        }
+    }
 
     async function loadData() {
 
@@ -54,8 +70,13 @@ export function Resumo() {
 
 
         //transações de saida
-        const expensives = responseFormatted
-            .filter((expensive: TransactionData) => expensive.type === 'negative');
+        //comparar se o ano é o mesmo e se o mês é o mesmo 
+        const expensives = responseFormatted.filter(
+            (expensive: TransactionData) =>
+                expensive.type === "negative" &&
+                new Date(expensive.date).getMonth() === selectedDate.getMonth() &&
+                new Date(expensive.date).getFullYear() === selectedDate.getFullYear()
+        );
 
         //reduce para somar os valores de cada categoria
         const expensivesTotal = expensives
@@ -114,7 +135,7 @@ export function Resumo() {
 
     useFocusEffect(useCallback(() => {
         loadData();
-    }, []));
+    }, [selectedDate]));
 
     return (
         <Container>
@@ -131,15 +152,20 @@ export function Resumo() {
             >
 
                 <MonthSelect>
-                    <MonthSelectButton >
+                    <MonthSelectButton
+                        onPress={() => handleDateChange('prev')}
+                    >
                         <MonthSelectIcon name="chevron-left" />
                     </MonthSelectButton>
 
                     <Month>
-                        Agosto, 2022
+                        {/* format month */}
+                        {format(selectedDate, 'MMMM yyyy', { locale: ptBR })}
                     </Month>
 
-                    <MonthSelectButton>
+                    <MonthSelectButton
+                        onPress={() => handleDateChange('next')}
+                    >
                         <MonthSelectIcon name="chevron-right" />
                     </MonthSelectButton>
                 </MonthSelect>
