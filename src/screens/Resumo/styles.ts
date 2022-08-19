@@ -31,5 +31,10 @@ export const Title = styled.Text`
     color: ${({ theme }) => theme.colors.shape};
 `;
 
+export const ChartContainer = styled.View`
+    width: 100%;
+    align-items: center;
+`;
+
 
 
