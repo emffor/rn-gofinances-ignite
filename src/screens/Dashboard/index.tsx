@@ -196,8 +196,10 @@ export function Dashboard() {
     loadTransactions();
 
     //LIMPAR LISTA DE TRANSACTION
-    /* const dataKey = '@gofinances:transactions';
-    AsyncStorage.removeItem(dataKey); */
+    /* 
+      const dataKey = '@gofinances:transactions';
+      AsyncStorage.removeItem(dataKey); 
+    */
   }, []);
 
   //Recarregar tela
