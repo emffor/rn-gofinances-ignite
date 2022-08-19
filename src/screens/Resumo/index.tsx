@@ -25,6 +25,7 @@ import {
     Month,
     LoadContainer
 } from './styles';
+import { ActivityIndicator } from 'react-native';
 
 interface TransactionData {
     type: 'positive' | 'negative';
@@ -45,6 +46,7 @@ interface CategoryData {
 export function Resumo() {
     const theme = useTheme();
 
+    const [isLoading, setIsLoading] = useState(false);
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [totalByCategories, setTotalByCategories] = useState<CategoryData[]>([]);
 
@@ -61,6 +63,8 @@ export function Resumo() {
     }
 
     async function loadData() {
+        //no inicio por causa do error do useFocusEffect
+        setIsLoading(true);
 
         //Acesso ao AsyncStorage para buscar o dataKey.
         const dataKey = '@gofinances:transactions';
@@ -124,14 +128,11 @@ export function Resumo() {
         });
 
         setTotalByCategories(totalByCategory);
-
+        setIsLoading(false);
         /* console.log(totalByCategory); */
 
     }
 
-    useEffect(() => {
-        loadData();
-    }, []);
 
     useFocusEffect(useCallback(() => {
         loadData();
@@ -143,63 +144,70 @@ export function Resumo() {
                 <Title>Resumo por categoria</Title>
             </Header>
 
-            <Content
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{
-                    paddingBottom: useBottomTabBarHeight(),
-                    paddingHorizontal: RFValue(24),
-                }}
-            >
+            {
+                isLoading ?
+                    <LoadContainer>
+                        <ActivityIndicator color={theme.colors.primary} size={'large'} />
+                    </LoadContainer> :
 
-                <MonthSelect>
-                    <MonthSelectButton
-                        onPress={() => handleDateChange('prev')}
-                    >
-                        <MonthSelectIcon name="chevron-left" />
-                    </MonthSelectButton>
-
-                    <Month>
-                        {/* format month */}
-                        {format(selectedDate, 'MMMM yyyy', { locale: ptBR })}
-                    </Month>
-
-                    <MonthSelectButton
-                        onPress={() => handleDateChange('next')}
-                    >
-                        <MonthSelectIcon name="chevron-right" />
-                    </MonthSelectButton>
-                </MonthSelect>
-
-                <ChartContainer>
-                    <VictoryPie
-                        data={totalByCategories}
-                        colorScale={totalByCategories.map(category => category.color)}
-                        style={{
-                            labels: {
-                                fontSize: RFValue(15),
-                                fontWeight: 'bold',
-                                fill: theme.colors.shape,
-                            }
+                    <Content
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={{
+                            paddingBottom: useBottomTabBarHeight(),
+                            paddingHorizontal: RFValue(24),
                         }}
-                        labelRadius={90} //leva pra dentro os numeros
-                        x="percent"
-                        y="total"
-                    />
-                </ChartContainer>
+                    >
+
+                        <MonthSelect>
+                            <MonthSelectButton
+                                onPress={() => handleDateChange('prev')}
+                            >
+                                <MonthSelectIcon name="chevron-left" />
+                            </MonthSelectButton>
+
+                            <Month>
+                                {/* format month */}
+                                {format(selectedDate, 'MMMM yyyy', { locale: ptBR })}
+                            </Month>
+
+                            <MonthSelectButton
+                                onPress={() => handleDateChange('next')}
+                            >
+                                <MonthSelectIcon name="chevron-right" />
+                            </MonthSelectButton>
+                        </MonthSelect>
+
+                        <ChartContainer>
+                            <VictoryPie
+                                data={totalByCategories}
+                                colorScale={totalByCategories.map(category => category.color)}
+                                style={{
+                                    labels: {
+                                        fontSize: RFValue(15),
+                                        fontWeight: 'bold',
+                                        fill: theme.colors.shape,
+                                    }
+                                }}
+                                labelRadius={90} //leva pra dentro os numeros
+                                x="percent"
+                                y="total"
+                            />
+                        </ChartContainer>
 
 
-                {
-                    totalByCategories.map((category: CategoryData) => (
-                        <HistoryCard
-                            key={category.key}
-                            title={category.name}
-                            amount={category.totalFormatted}
-                            color={category.color}
-                        />
-                    ))
-                }
+                        {
+                            totalByCategories.map((category: CategoryData) => (
+                                <HistoryCard
+                                    key={category.key}
+                                    title={category.name}
+                                    amount={category.totalFormatted}
+                                    color={category.color}
+                                />
+                            ))
+                        }
 
-            </Content>
+                    </Content>
+            }
         </Container>
     );
 }
