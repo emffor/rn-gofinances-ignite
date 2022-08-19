@@ -5,7 +5,7 @@ interface AuthProviderProps {
 }
 
 interface User {
-    user: string;
+    id: string;
     name: string;
     email: string;
     photo?: string;
@@ -18,7 +18,6 @@ interface IAuthContextData {
 const AuthContext = createContext<IAuthContextData>({} as IAuthContextData);
 
 function AuthProvider({ children }: AuthProviderProps) {
-
     const user = {
         id: "2123312",
         name: "Eloan Ferreira",
