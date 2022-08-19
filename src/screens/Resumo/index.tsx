@@ -4,6 +4,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useTheme } from 'styled-components';
 
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+
 import { VictoryPie } from "victory-native";
 
 import { HistoryCard } from '../../components/HistoryCard';
@@ -14,7 +16,12 @@ import {
     Content,
     Title,
     Header,
-    ChartContainer
+    ChartContainer,
+    MonthSelect,
+    MonthSelectButton,
+    MonthSelectIcon,
+    Month,
+    LoadContainer
 } from './styles';
 
 interface TransactionData {
@@ -57,7 +64,7 @@ export function Resumo() {
             }, 0);
 
         //total
-        console.log(expensivesTotal);
+        /* console.log(expensivesTotal); */
 
 
         //vetor auxiliar para armazenar as transações de saida
@@ -115,7 +122,27 @@ export function Resumo() {
                 <Title>Resumo por categoria</Title>
             </Header>
 
-            <Content>
+            <Content
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                    paddingBottom: useBottomTabBarHeight(),
+                    paddingHorizontal: RFValue(24),
+                }}
+            >
+
+                <MonthSelect>
+                    <MonthSelectButton >
+                        <MonthSelectIcon name="chevron-left" />
+                    </MonthSelectButton>
+
+                    <Month>
+                        Agosto, 2022
+                    </Month>
+
+                    <MonthSelectButton>
+                        <MonthSelectIcon name="chevron-right" />
+                    </MonthSelectButton>
+                </MonthSelect>
 
                 <ChartContainer>
                     <VictoryPie
