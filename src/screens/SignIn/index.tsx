@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import { ActivityIndicator, Platform } from "react-native";
+import React, { useState } from "react";
+import { ActivityIndicator, Platform, Alert } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { useTheme } from "styled-components";
 import { SignInSocialButton } from "../../components/SignInSocialButton";
@@ -21,14 +21,21 @@ import {
 } from "./styles";
 
 export function SignIn() {
-    const { user } = useAuth();
-    console.log(user);
+    const { signInWithGoogle } = useAuth();
 
     const [isLoading, setIsLoading] = useState(false);
 
     const theme = useTheme();
 
-    async function handleSignInWithGoogle() { }
+    async function handleSignInWithGoogle() {
+        try {
+            await signInWithGoogle();
+
+        } catch (error) {
+            console.log(error);
+            Alert.alert("Erro", "Não foi possível fazer o login com o Google");
+        }
+    }
 
     async function handleSignInWithApple() { }
 
