@@ -29,21 +29,27 @@ export function SignIn() {
 
     async function handleSignInWithGoogle() {
         try {
-            await signInWithGoogle();
+            setIsLoading(true);
+            return await signInWithGoogle();
 
         } catch (error) {
             console.log(error);
             Alert.alert("Erro", "Não foi possível fazer o login com o Google");
+        } finally {
+            setIsLoading(false);
         }
     }
 
     async function handleSignInWithApple() {
         try {
-            await signInWithApple();
+            setIsLoading(true);
+            return await signInWithApple();
 
         } catch (error) {
             console.log(error);
             Alert.alert("Erro", "Não foi possível fazer o login com a Apple");
+        } finally {
+            setIsLoading(false);
         }
     }
 

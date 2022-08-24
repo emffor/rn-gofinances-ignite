@@ -17,7 +17,7 @@ import theme from './src/global/styles/theme';
 
 import { NavigationContainer } from "@react-navigation/native";
 
-import { AuthProvider } from './src/hook/auth';
+import { AuthProvider, useAuth } from './src/hook/auth';
 import { Routes } from './src/routes';
 
 
@@ -28,9 +28,11 @@ export default function App() {
     Poppins_700Bold
   });
 
+  const { userStorageLoading } = useAuth();
+
   //Boa pratica com AppLoading
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded || userStorageLoading) {
     return <AppLoading />
   }
 

@@ -224,12 +224,12 @@ export function Dashboard() {
 
                 <UserInfo>
                   <Photo
-                    source={{ uri: 'https://github.com/emffor.png' }}
+                    source={{ uri: user.photo }}
                   />
 
                   <User>
                     <UserGreeting>Olá, </UserGreeting>
-                    <UserName>Eloan Ferreira, </UserName>
+                    <UserName>{user.name} </UserName>
                   </User>
 
                 </UserInfo>
