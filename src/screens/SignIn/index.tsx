@@ -35,7 +35,6 @@ export function SignIn() {
         } catch (error) {
             console.log(error);
             Alert.alert("Erro", "Não foi possível fazer o login com o Google");
-        } finally {
             setIsLoading(false);
         }
     }
@@ -48,7 +47,6 @@ export function SignIn() {
         } catch (error) {
             console.log(error);
             Alert.alert("Erro", "Não foi possível fazer o login com a Apple");
-        } finally {
             setIsLoading(false);
         }
     }

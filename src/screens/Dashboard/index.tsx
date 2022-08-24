@@ -92,14 +92,23 @@ export function Dashboard() {
     type: 'positive' | 'negative'
   ) {
 
+    //para tirar o NaN quando não tiver nenhum dado.
+    const collectionFiltered = collection.filter(transaction => transaction.type === type);
+
+    if (collectionFiltered.length === 0)
+      return 0;
+
+
+    /* console.log(type, collectionFiltered); */
+
+
     //Listar qual a ultima transactions de entrada / precisa de um Filter/ tem que tipar o transaction com DataListProps / encima do filter tem q fazer um .map para retornar date para pegar uma lista com numeração para pegar a maior data.
 
     //Math.max.apply(Math, server para pegar a maior data)
 
     const lastTransactions = new Date(
       Math.max.apply(Math,
-        collection
-          .filter((transaction: DataListProps) => transaction.type === type)
+        collectionFiltered
           .map((transaction: DataListProps) => new Date(transaction.date).getTime())));
 
     return `${lastTransactions.getDate()} de ${lastTransactions.toLocaleString('pt-BR', {
@@ -162,7 +171,9 @@ export function Dashboard() {
     //passando a função data negative
     const lastTransactionExpensive = getLastTransactionDate(transactions, "negative");
     //passando data do total
-    const totalInterval = `01 a ${lastTransactionExpensive}`
+    const totalInterval = lastTransactionExpensive === 0
+      ? 'Não há transações'
+      : `01 a ${lastTransactionExpensive}`
 
     const total = entriesTotal - expensiveTotal;
 
@@ -172,14 +183,18 @@ export function Dashboard() {
           style: 'currency',
           currency: 'BRL',
         }),
-        lastTransaction: `Última entrada dia ${lastTransactionEntries}`
+        lastTransaction: lastTransactionEntries === 0
+          ? 'Nenhuma Transação de entrada'
+          : `Última entrada dia ${lastTransactionEntries}`
       },
       expensives: {
         amount: expensiveTotal.toLocaleString('pt-BR', {
           style: 'currency',
           currency: 'BRL',
         }),
-        lastTransaction: `Última entrada saída ${lastTransactionExpensive}`
+        lastTransaction: lastTransactionExpensive === 0
+          ? 'Nenhuma Transação de saída'
+          : `Última entrada saída ${lastTransactionExpensive}`
       },
       total: {
         amount: total.toLocaleString('pt-BR', {
@@ -200,7 +215,7 @@ export function Dashboard() {
 
     //LIMPAR LISTA DE TRANSACTION
 
-    /* const dataKey = '@gofinances:transactions_user';
+    /* const dataKey = `@gofinances:transactions_user:${user.id}`;
     AsyncStorage.removeItem(dataKey); */
 
   }, []);
