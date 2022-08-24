@@ -25,6 +25,7 @@
     "expo-random": "~12.1.1",
     "expo-splash-screen": "~0.14.1",
     "expo-status-bar": "~1.2.0",
+    "expo-updates": "~0.11.7",
     "i": "^0.3.7",
     "intl": "^1.2.5",
     "react": "17.0.1",
