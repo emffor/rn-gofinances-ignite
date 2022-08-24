@@ -21,7 +21,7 @@ import {
 } from "./styles";
 
 export function SignIn() {
-    const { signInWithGoogle } = useAuth();
+    const { signInWithGoogle, signInWithApple } = useAuth();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -37,7 +37,15 @@ export function SignIn() {
         }
     }
 
-    async function handleSignInWithApple() { }
+    async function handleSignInWithApple() {
+        try {
+            await signInWithApple();
+
+        } catch (error) {
+            console.log(error);
+            Alert.alert("Erro", "Não foi possível fazer o login com a Apple");
+        }
+    }
 
     return (
         <Container>

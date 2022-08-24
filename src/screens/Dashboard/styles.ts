@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { FlatList } from 'react-native';
+import { FlatList, TouchableOpacity } from 'react-native';
 import { RFPercentage, RFValue } from 'react-native-responsive-fontsize';
 import { Feather } from '@expo/vector-icons';
 import { BorderlessButton } from 'react-native-gesture-handler';
@@ -66,7 +66,7 @@ export const UserName = styled.Text`
     font-family: ${({ theme }) => theme.fonts.bold};
 `;
 
-export const LogoutButton = styled(BorderlessButton)`
+export const LogoutButton = styled(TouchableOpacity)`
     
 `;
 

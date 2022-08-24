@@ -16,10 +16,9 @@ import {
 import theme from './src/global/styles/theme';
 
 import { NavigationContainer } from "@react-navigation/native";
-import { AppRoutes } from './src/routes/app.routes';
-import { SignIn } from './src/screens/SignIn';
 
 import { AuthProvider } from './src/hook/auth';
+import { Routes } from './src/routes';
 
 
 export default function App() {
@@ -37,14 +36,9 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <NavigationContainer>
-        {/* <AppRoutes /> */}
-
-        <AuthProvider>
-          <SignIn />
-        </AuthProvider>
-
-      </NavigationContainer>
+      <AuthProvider>
+        <Routes />
+      </AuthProvider>
     </ThemeProvider>
   );
 }

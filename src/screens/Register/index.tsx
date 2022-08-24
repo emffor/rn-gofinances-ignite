@@ -21,7 +21,6 @@ import { InputForm } from '../../components/Form/InputForm';
 import { TransactionTypeButton } from '../../components/Form/TransactionTypeButton';
 import { CategorySelect } from '../CategorySelect';
 
-
 import {
   Container,
   Header,
@@ -34,6 +33,7 @@ import {
 //importando tudo com q tem dentro de Yup // Validação
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useAuth } from '../../hook/auth';
 
 interface FormData {
   [name: string]: any;
@@ -56,7 +56,9 @@ type NavigationProps = {
 }
 
 export function Register() {
-  const dataKey = '@gofinances:transactions';
+  const { user } = useAuth();
+
+  const dataKey = `@gofinances:transactions_user:${user.id}`;
 
   const [transactionType, setTransactionType] = useState('');
 
@@ -79,7 +81,6 @@ export function Register() {
   function handleCloseSelectCategoryModal() {
     setCategoryModalOpen(false);
   }
-
 
   const {
     control,

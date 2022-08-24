@@ -7,6 +7,7 @@ import { useTheme } from 'styled-components';
 
 //Recarregar tela.
 import { useFocusEffect } from '@react-navigation/native';
+import { useAuth } from "../../hook/auth";
 
 import {
   Container,
@@ -42,7 +43,44 @@ interface HighlightData {
 }
 
 export function Dashboard() {
+  /* const data: DataListProps[] = [
+      {
+        id: '1',
+        type: 'positive',
+        title: 'Desenvolvimento de site',
+        amount: 'R$ 12.000,00',
+        category: {
+          name: 'Vendas',
+          icon: 'dollar-sign',
+        },
+        date: '13/04/2020',
+      },
+      {
+        id: '2',
+        type: 'negative',
+        title: 'Hamburgueria Pizzy',
+        amount: 'R$ 59,00',
+        category: {
+          name: 'Alimentação',
+          icon: 'coffee',
+        },
+        date: '20/04/2020',
+      },
+      {
+        id: '3',
+        type: 'negative',
+        title: 'Aluguel do apartamento',
+        amount: 'R$ 1.200,00',
+        category: {
+          name: 'Casa',
+          icon: 'shopping-bag',
+        },
+        date: '27/04/2020',
+      }]; */
+
   const theme = useTheme();
+  const { signOut, user } = useAuth();
+
   const [isLoading, setIsLoading] = useState(true);
 
   const [transactions, setTransactions] = useState<DataListProps[]>([]);
@@ -71,7 +109,7 @@ export function Dashboard() {
   }
 
   async function loadTransactions() {
-    const dataKey = '@gofinances:transactions';
+    const dataKey = `@gofinances:transactions_user:${user.id}`;
     const response = await AsyncStorage.getItem(dataKey);
     const transactions = response ? JSON.parse(response) : [];
 
@@ -161,10 +199,10 @@ export function Dashboard() {
     loadTransactions();
 
     //LIMPAR LISTA DE TRANSACTION
-    /* 
-      const dataKey = '@gofinances:transactions';
-      AsyncStorage.removeItem(dataKey); 
-    */
+
+    /* const dataKey = '@gofinances:transactions_user';
+    AsyncStorage.removeItem(dataKey); */
+
   }, []);
 
   //Recarregar tela
@@ -175,6 +213,7 @@ export function Dashboard() {
   return (
     <Container>
       {
+
         isLoading ?
           <LoadContainer>
             <ActivityIndicator color={theme.colors.primary} size={'large'} />
@@ -195,9 +234,8 @@ export function Dashboard() {
 
                 </UserInfo>
 
-                <LogoutButton onPress={() => { }}>
+                <LogoutButton onPress={signOut}>
                   <Icon name='power' />
-
                 </LogoutButton>
 
               </UserWrapper>
@@ -249,4 +287,3 @@ export function Dashboard() {
     </Container>
   );
 }
-

@@ -12,6 +12,7 @@ import { VictoryPie } from "victory-native";
 
 import { HistoryCard } from '../../components/HistoryCard';
 import { categories } from '../../utils/categories';
+import { ActivityIndicator } from 'react-native';
 
 import {
     Container,
@@ -25,7 +26,7 @@ import {
     Month,
     LoadContainer
 } from './styles';
-import { ActivityIndicator } from 'react-native';
+import { useAuth } from '../../hook/auth';
 
 interface TransactionData {
     type: 'positive' | 'negative';
@@ -45,6 +46,8 @@ interface CategoryData {
 
 export function Resumo() {
     const theme = useTheme();
+    const { user } = useAuth();
+
 
     const [isLoading, setIsLoading] = useState(false);
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -67,7 +70,7 @@ export function Resumo() {
         setIsLoading(true);
 
         //Acesso ao AsyncStorage para buscar o dataKey.
-        const dataKey = '@gofinances:transactions';
+        const dataKey = `@gofinances:transactions_user:${user.id}`;
         const response = await AsyncStorage.getItem(dataKey);
         const responseFormatted = response ? JSON.parse(response) : [];
         /* console.log(responseFormatted); */
